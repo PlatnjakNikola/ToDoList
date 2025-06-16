@@ -21,7 +21,6 @@ import com.example.todolist.viewmodel.ToDoItemsViewModel
 
 @Composable
 fun ToDoItemsScreen(
-    listId: Int,
     viewModel: ToDoItemsViewModel,
     onBack: () -> Unit
 ) {
