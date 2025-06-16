@@ -2,8 +2,8 @@ package com.example.todolist.ui.screen
 
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,44 +22,68 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.todolist.viewmodel.ToDoListsViewModel
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.ui.Alignment
 
 @Composable
 fun ToDoListsScreen(
     viewModel: ToDoListsViewModel,
     onListClick: (Int) -> Unit
+
 ) {
     val lists by viewModel.lists.observeAsState(emptyList())
     var title by remember { mutableStateOf("") }
 
-    Column(Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+
+        // Unos novog naslova liste
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("New List Title") }
+            label = { Text("New List Title") },
+            modifier = Modifier.fillMaxWidth()
         )
-        Button(onClick = {
-            viewModel.addList(title)
-            title = ""
-        }) {
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Gumb za dodavanje
+        Button(
+            onClick = {
+                if (title.isNotBlank()) {
+                    viewModel.addList(title)
+                    title = ""
+                }
+            },
+            modifier = Modifier.align(Alignment.End)
+        ) {
             Text("Add List")
         }
 
-        Spacer(modifier = Modifier.padding(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn {
+        // Prikaz lista
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(lists) { list ->
-                Row(
-                    Modifier
+                ElevatedCard(
+                    modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onListClick(list.id) }
-                        .padding(8.dp)
                 ) {
-                    Text(text = list.name, fontSize = 20.sp)
+                    Text(
+                        text = list.name,
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(16.dp)
+                    )
                 }
             }
         }
     }
 }
+
 
 
 

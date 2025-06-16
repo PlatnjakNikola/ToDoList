@@ -48,9 +48,9 @@ class MainActivity : ComponentActivity() {
                         )
 
                         ToDoItemsScreen(
-                            listId = listId,
                             viewModel = toDoItemsViewModel,
-                            onBack = { navController.popBackStack() }
+                            onBack = { navController.popBackStack() },
+                            listId = listId
                         )
                     }
                 }

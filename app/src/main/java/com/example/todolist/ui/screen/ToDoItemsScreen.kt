@@ -10,78 +10,101 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.todolist.entity.ToDoItemEntity
 import com.example.todolist.viewmodel.ToDoItemsViewModel
+
 
 @Composable
 fun ToDoItemsScreen(
     viewModel: ToDoItemsViewModel,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    listId: Int
 ) {
     val items by viewModel.items.observeAsState(emptyList())
     var input by remember { mutableStateOf("") }
 
-    Column(Modifier.padding(16.dp)) {
-        Button(onClick = onBack) {
-            Text("Back")
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+
+        // Gumb za povratak
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = onBack) {
+                Text("Back")
+            }
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Unos novog itema
         OutlinedTextField(
             value = input,
             onValueChange = { input = it },
             label = { Text("New Item") },
             modifier = Modifier.fillMaxWidth()
         )
-        Button(onClick = {
-            viewModel.addItem(input)
-            input = ""
-        }) {
-            Text("Add Item")
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Dodavanje itema
+        Button(
+            onClick = {
+                if (input.isNotBlank()) {
+                    viewModel.addItem(input)
+                    input = ""
+                }
+            },
+            modifier = Modifier.align(Alignment.End)
+        ) {
+            Text("Add")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn {
+        // Prikaz itema
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(items) { item ->
-                ItemRow(item = item, onToggle = {
-                    viewModel.toggleItemDone(it)
-                }, onDelete = {
-                    viewModel.deleteItem(it.id)
-                })
+                ElevatedCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.toggleItemDone(item) }
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()       // OVDJE DODAJ fillMaxWidth
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row {
+                            Text(
+                                if (item.isDone) "✓" else "○",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(end = 12.dp)
+                            )
+                            Text(
+                                text = item.content,
+                                fontSize = 20.sp,
+                                color = if (item.isDone)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        IconButton(onClick = { viewModel.deleteItem(item.id) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-
-@Composable
-fun ItemRow(
-    item: ToDoItemEntity,
-    onToggle: (ToDoItemEntity) -> Unit,
-    onDelete: (ToDoItemEntity) -> Unit
-) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable { onToggle(item) },
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Row {
-            Text(
-                if (item.isDone) "✓ " else "○ ",
-                fontSize = 20.sp,
-                modifier = Modifier.padding(end = 8.dp)
-            )
-            Text(item.content, fontSize = 20.sp)
-        }
-        IconButton(onClick = { onDelete(item) }) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete")
         }
     }
 }
