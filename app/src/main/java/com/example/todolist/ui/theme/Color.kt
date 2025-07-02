@@ -2,10 +2,10 @@ package com.example.todolist.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFC6B1F6)
-val PurpleGrey80 = Color(0xFFFFFFFF)
-val Pink80 = Color(0xFFEFB8C8)
+val Purple80 = Color(0xFF6600FF)
+val PurpleGrey80 = Color(0xFFFD0000)
+val Pink80 = Color(0xFF00FF36)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Purple40 = Color(0xFF3B00FF)
+val PurpleGrey40 = Color(0xFFFF0019)
+val Pink40 = Color(0xFF32FF00)

@@ -35,7 +35,7 @@ interface ToDoDAO {
     @Update
     suspend fun updateItem(item: ToDoItemEntity)
 
-    @Query("DELETE FROM todo_lists WHERE id = :itemId")
+    @Query("DELETE FROM todo_items WHERE id = :itemId ")
     suspend fun deleteItemById(itemId: Int)
 
 }

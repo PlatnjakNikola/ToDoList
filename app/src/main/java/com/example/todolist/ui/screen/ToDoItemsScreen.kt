@@ -25,15 +25,14 @@ import com.example.todolist.viewmodel.ToDoItemsViewModel
 @Composable
 fun ToDoItemsScreen(
     viewModel: ToDoItemsViewModel,
-    onBack: () -> Unit,
-    listId: Int
+    onBack: () -> Unit
 ) {
     val items by viewModel.items.observeAsState(emptyList())
     var input by remember { mutableStateOf("") }
 
     Column(modifier = Modifier
         .fillMaxSize()
-        .padding(16.dp)) {
+        .padding(16.dp, 30.dp)) {
 
         // Gumb za povratak
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -42,7 +41,6 @@ fun ToDoItemsScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
 
         // Unos novog itema
         OutlinedTextField(
@@ -79,7 +77,7 @@ fun ToDoItemsScreen(
                 ) {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()       // OVDJE DODAJ fillMaxWidth
+                            .fillMaxWidth()
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
