@@ -1,6 +1,5 @@
 package com.example.todolist.ui.screen
 
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,38 +25,43 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 
 @Composable
 fun ToDoListsScreen(
     viewModel: ToDoListsViewModel,
     onListClick: (Int) -> Unit
+
 ) {
     val lists by viewModel.lists.observeAsState(emptyList())
     var title by remember { mutableStateOf("") }
 
-    // Novo: stanje za uređivanje
-    var editingListId by remember { mutableStateOf<Int?>(null) }
-    var editedTitle by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp, 32.dp)
-    ) {
+    // Za prikaz dialoga
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogText by remember { mutableStateOf("") }
+    var listToRename by remember { mutableStateOf<Int?>(null) }
 
-        // Unos nove liste
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp, 32.dp)) {
+
+        // Unos novog naslova liste
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
             label = { Text("New List Title") },
             modifier = Modifier.fillMaxWidth()
-        )
+            )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -76,12 +80,13 @@ fun ToDoListsScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Prikaz svih lista
+        // Prikaz lista
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(lists) { list ->
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .clickable { onListClick(list.id) }
                 ) {
                     Row(
                         modifier = Modifier
@@ -89,47 +94,66 @@ fun ToDoListsScreen(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (editingListId == list.id) {
-                            // Ako uređujemo ovu listu – prikaži input polje
-                            OutlinedTextField(
-                                value = editedTitle,
-                                onValueChange = { editedTitle = it },
-                                modifier = Modifier.weight(1f),
-                                singleLine = true
-                            )
+                    ){
+                        Text(
+                            text = list.name,
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .padding(16.dp)
+                        )
+
+                        Row{
                             IconButton(onClick = {
-                                viewModel.renameList(list, editedTitle)
-                                editingListId = null
+                                showDialog = true
+                                dialogText = list.name
+                                listToRename = list.id
                             }) {
-                                Icon(Icons.Default.Edit, contentDescription = "Confirm Edit")
+                                Icon(Icons.Default.Edit, contentDescription = "Update")
                             }
-                        } else {
-                            // Inače prikaži naziv kao tekst
-                            Text(
-                                text = list.name,
-                                fontSize = 20.sp,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .clickable { onListClick(list.id) }
-                            )
-                            Row {
-                                IconButton(onClick = {
-                                    editingListId = list.id
-                                    editedTitle = list.name
-                                }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Edit")
-                                }
-                                IconButton(onClick = { viewModel.deleteList(list.id) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Delete")
-                                }
+                            IconButton(onClick = { viewModel.deleteList(list.id) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Delete")
                             }
                         }
                     }
+                }
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        text = {
+                            OutlinedTextField(
+                                value = dialogText,
+                                onValueChange = { dialogText = it },
+                                label = { Text("New name") },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        },
+                        confirmButton = {
+                            IconButton(onClick = {
+                                val listId = listToRename
+                                if (listId != null && dialogText.isNotBlank()) {
+                                    val list = lists.find { it.id == listId }
+                                    if (list != null) {
+                                        viewModel.renameList(list, dialogText)
+                                    }
+                                }
+                                showDialog = false
+                            }) {Icon(Icons.Default.Done, contentDescription = "Cancel")
+                            }
+                        },
+                        dismissButton = {
+                            IconButton(onClick = { showDialog = false }) {
+                                Icon(Icons.Default.Close, contentDescription = "Cancel")
+                            }
+                        }
+                    )
                 }
             }
         }
     }
 }
+
+
+
 
 
