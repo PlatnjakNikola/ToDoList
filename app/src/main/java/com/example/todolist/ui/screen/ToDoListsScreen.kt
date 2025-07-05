@@ -33,6 +33,7 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 
@@ -59,7 +60,8 @@ fun ToDoListsScreen(
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("New List Title") },
+                    label = { Text("New List Title ", color = MaterialTheme.colorScheme.secondary) },
+
             modifier = Modifier.fillMaxWidth()
             )
 
@@ -138,7 +140,8 @@ fun ToDoListsScreen(
                                     }
                                 }
                                 showDialog = false
-                            }) {Icon(Icons.Default.Done, contentDescription = "Cancel")
+                            }) {
+                                Icon(Icons.Default.Done, contentDescription = "Done")
                             }
                         },
                         dismissButton = {
