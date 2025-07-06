@@ -17,6 +17,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.todolist.viewmodel.ToDoItemsViewModel
@@ -47,7 +49,8 @@ fun ToDoItemsScreen(
             value = input,
             onValueChange = { input = it },
             label = { Text("New Item") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontSize = 20.sp, color = Color.Black)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -92,9 +95,9 @@ fun ToDoItemsScreen(
                                 text = item.content,
                                 fontSize = 20.sp,
                                 color = if (item.isDone)
-                                    MaterialTheme.colorScheme.primary
+                                    Color.Yellow
                                 else
-                                    MaterialTheme.colorScheme.onSurface
+                                    MaterialTheme.colorScheme.secondary
                             )
                         }
                         IconButton(onClick = { viewModel.deleteItem(item.id) }) {

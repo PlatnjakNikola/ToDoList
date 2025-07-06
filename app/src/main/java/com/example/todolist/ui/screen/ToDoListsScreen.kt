@@ -33,9 +33,14 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+
+
 
 @Composable
 fun ToDoListsScreen(
@@ -60,9 +65,9 @@ fun ToDoListsScreen(
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-                    label = { Text("New List Title ", color = MaterialTheme.colorScheme.secondary) },
-
-            modifier = Modifier.fillMaxWidth()
+            label = { Text("New List Title ") },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontSize = 20.sp, color = Color.Black)
             )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -120,14 +125,21 @@ fun ToDoListsScreen(
                 }
                 if (showDialog) {
                     AlertDialog(
+                        containerColor = Color(0xFF3F3E3E),
                         onDismissRequest = { showDialog = false },
                         text = {
                             OutlinedTextField(
                                 value = dialogText,
                                 onValueChange = { dialogText = it },
-                                label = { Text("New name") },
+                                label = { Text("New name")},
                                 singleLine = true,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedTextColor = Color.White,
+                                    unfocusedTextColor = Color.White,
+                                    focusedLabelColor = Color.White,
+                                    unfocusedLabelColor = Color.White
+                                )
                             )
                         },
                         confirmButton = {
@@ -141,12 +153,12 @@ fun ToDoListsScreen(
                                 }
                                 showDialog = false
                             }) {
-                                Icon(Icons.Default.Done, contentDescription = "Done")
+                                Icon(Icons.Default.Done, contentDescription = "Done", tint = MaterialTheme.colorScheme.tertiary )
                             }
                         },
                         dismissButton = {
                             IconButton(onClick = { showDialog = false }) {
-                                Icon(Icons.Default.Close, contentDescription = "Cancel")
+                                Icon(Icons.Default.Close, contentDescription = "Cancel", tint = Color.Red)
                             }
                         }
                     )

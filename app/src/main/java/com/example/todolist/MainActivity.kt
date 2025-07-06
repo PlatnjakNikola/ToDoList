@@ -3,7 +3,6 @@ package com.example.todolist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
@@ -24,10 +23,7 @@ class MainActivity : ComponentActivity() {
         val toDoListsViewModel = ViewModelProvider(this)[ToDoListsViewModel::class.java]
 
         setContent {
-            ToDoListTheme (
-                darkTheme = isSystemInDarkTheme(),
-                dynamicColor = true
-            ) {
+            ToDoListTheme{
                 val navController: NavHostController = rememberNavController()
 
                 NavHost(
