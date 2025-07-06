@@ -68,6 +68,7 @@ dependencies {
     // Preview i alat za debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.ui.tooling.preview)
+    testImplementation(kotlin("test"))
 }
 
 ksp {

@@ -24,6 +24,8 @@ import com.example.todolist.viewmodel.ToDoListsViewModel
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -33,13 +35,11 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 
 
 @Composable
@@ -51,23 +51,34 @@ fun ToDoListsScreen(
     val lists by viewModel.lists.observeAsState(emptyList())
     var title by remember { mutableStateOf("") }
 
-
-    // Za prikaz dialoga
     var showDialog by remember { mutableStateOf(false) }
     var dialogText by remember { mutableStateOf("") }
     var listToRename by remember { mutableStateOf<Int?>(null) }
+
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp, 32.dp)) {
 
-        // Unos novog naslova liste
+        // Unos naslova
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
             label = { Text("New List Title ") },
             modifier = Modifier.fillMaxWidth(),
-            textStyle = TextStyle(fontSize = 20.sp, color = Color.Black)
+            singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    if (title.isNotBlank()) {
+                        viewModel.addList(title)
+                        title = ""
+                        keyboardController?.hide()
+                    }
+                }
+            ),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black)
             )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -123,6 +134,7 @@ fun ToDoListsScreen(
                         }
                     }
                 }
+                // popUp dialog
                 if (showDialog) {
                     AlertDialog(
                         containerColor = Color(0xFF3F3E3E),
@@ -134,16 +146,12 @@ fun ToDoListsScreen(
                                 label = { Text("New name")},
                                 singleLine = true,
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedTextColor = Color.White,
-                                    unfocusedTextColor = Color.White,
-                                    focusedLabelColor = Color.White,
-                                    unfocusedLabelColor = Color.White
-                                )
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
                             )
                         },
                         confirmButton = {
-                            IconButton(onClick = {
+                            IconButton(
+                                onClick = {
                                 val listId = listToRename
                                 if (listId != null && dialogText.isNotBlank()) {
                                     val list = lists.find { it.id == listId }
@@ -152,6 +160,7 @@ fun ToDoListsScreen(
                                     }
                                 }
                                 showDialog = false
+
                             }) {
                                 Icon(Icons.Default.Done, contentDescription = "Done", tint = MaterialTheme.colorScheme.tertiary )
                             }

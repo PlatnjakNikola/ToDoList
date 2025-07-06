@@ -28,10 +28,4 @@ class ToDoItemsViewModel(private val listId: Int) : ViewModel() {
             dao.updateItem(item.copy(isDone = !item.isDone))
         }
     }
-
-    fun updateContent(item: ToDoItemEntity, newContent: String) {
-        viewModelScope.launch {
-            dao.updateItem(item.copy(content = newContent))
-        }
-    }
 }
