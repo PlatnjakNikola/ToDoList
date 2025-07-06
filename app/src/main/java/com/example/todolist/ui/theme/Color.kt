@@ -7,3 +7,5 @@ val White = Color(0xFFFFFFFF)
 val Green = Color.Green
 val Black = Color(0xFF000000)
 
+val LightBlue = Color(0xFFC4DAFD)
+
