@@ -1,5 +1,6 @@
 package com.example.todolist.ui.screen
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,12 +21,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.sqlite.db.SupportSQLiteOpenHelper
 import com.example.todolist.viewmodel.ToDoItemsViewModel
+import java.nio.file.WatchEvent
 
 
 @Composable
@@ -37,6 +41,9 @@ fun ToDoItemsScreen(
     var input by remember { mutableStateOf("") }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -88,7 +95,11 @@ fun ToDoItemsScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Prikaz itema
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier.fillMaxWidth(
+                if(isLandscape)0.7f else 1f)
+        ) {
             items(items) { item ->
                 ElevatedCard(
                     modifier = Modifier

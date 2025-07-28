@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.todolist.ui.screen.AboutScreen
 import com.example.todolist.ui.screen.ToDoItemsScreen
 import com.example.todolist.ui.screen.ToDoListsScreen
 import com.example.todolist.ui.theme.ToDoListTheme
@@ -28,14 +29,15 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "lists"
+                    startDestination = "About"
                 ) {
                     composable("lists") {
                         ToDoListsScreen(
                             viewModel = toDoListsViewModel,
                             onListClick = { listId ->
                                 navController.navigate("items/$listId")
-                            }
+                            },
+                            onAboutClick = { navController.navigate("about") }
                         )
                     }
 
@@ -54,6 +56,10 @@ class MainActivity : ComponentActivity() {
                             viewModel = toDoItemsViewModel,
                             onBack = { navController.popBackStack() },
                         )
+                    }
+
+                    composable("about"){
+                        AboutScreen(onList = {  navController.navigate("lists") })
                     }
                 }
             }
